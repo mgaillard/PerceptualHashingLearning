@@ -1,10 +1,10 @@
 function DisplayHashFunctions(P, L, W)
-  if size(P, 2) > 2
+  if columns(P) > 2
     warning("Only the first two dimensions of the space are displayed");
   endif
 
   % Length of the binary codes
-  b = size(W, 2);
+  b = columns(W);
   
   % Length of the lines
   line_length = 10;
@@ -12,8 +12,8 @@ function DisplayHashFunctions(P, L, W)
   % Plot the two first dimensions
   figure();
   hold on;
-  title("Points and hash functions");
   scatter(P(:, 1), P(:, 2), [], L);
+  title("Points and hash functions");
   for i = 1:b
     vec = [W(2, i) -W(1, i)];
     point = line_length * vec / sqrt(sum(vec .* vec));

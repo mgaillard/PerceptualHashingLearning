@@ -4,6 +4,12 @@ rho = 0;
 % Optimization
 opti_params = TrainModel(X1, X2, S, rho, 3);
 
-DisplayHashFunctions(P, L, opti_params);
-
+% Cost function with true binary codes
+% If the continuous cost at the end of the optimization is less than the real cost,
+% some activations might be near to 0.5 which is not a good value
 real_cost = RealCostFunction(X1, X2, opti_params, S, rho)
+
+% Histogram of the activations. The activations should be near to 0 or 1
+ActivationHistogram(P, opti_params, 20);
+% A Scatter plot of the points and the hyperplanes of the hash functions
+DisplayHashFunctions(P, L, opti_params);
