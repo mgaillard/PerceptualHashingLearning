@@ -1,7 +1,8 @@
+% param std Standard deviation of the normal distribution
 % param n Number of classes
 % param k Number of points per classe
 % param d Number of dimensions
-function [P, L, X1, X2, S] = GenerateNormalDistribution(var, n, k, d)
+function [P, L, X1, X2, S] = GenerateNormalDistribution(std, n, k, d)
   % All points
   P = [];
   % All labels
@@ -11,7 +12,7 @@ function [P, L, X1, X2, S] = GenerateNormalDistribution(var, n, k, d)
     % Location of the distribution
     position = unifrnd(-10, 10, 1, d);
     % Points from the distribution
-    points = normrnd(0, var, k, d);
+    points = normrnd(0, std, k, d);
     
     % Translate the points according to the center of the final distribution
     for j = 1:k
@@ -19,6 +20,7 @@ function [P, L, X1, X2, S] = GenerateNormalDistribution(var, n, k, d)
     endfor
     
     P = [P; points];
+    % Label the points with i
     L = [L; i*ones(k, 1)];
   endfor
   
@@ -26,6 +28,7 @@ function [P, L, X1, X2, S] = GenerateNormalDistribution(var, n, k, d)
   X1 = [];
   X2 = [];
   S = [];
+  % For each pair of points
   for i = 1:n*k
     for j = i+1:n*k
       X1 = [X1; P(i, :)];
