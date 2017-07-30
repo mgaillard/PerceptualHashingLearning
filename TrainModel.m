@@ -1,5 +1,5 @@
-function [optimal_weights] = TrainModel(X1, X2, S, rho, b)
-  CustomCostFunction = @(w) ContinuousCostFunction(X1, X2, w, S, rho);
+function [optimal_weights] = TrainModel(X1, X2, S, k, rho, b)
+  CustomCostFunction = @(w) ContinuousCostFunction(X1, X2, w, S, k, rho);
   
   options = optimset('MaxIter', 500);
   initial_weights = unifrnd(-1, 1, 2, b);

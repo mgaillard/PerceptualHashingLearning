@@ -1,7 +1,7 @@
 % Count the number of activations that are not near to 0 or 1.
-function [n] = NumberMiddleActivations(X, W)
+function [n] = NumberMiddleActivations(X, W, k)
   % Activations of the samples
-  a = 1.0 ./ (1.0 + exp(-X*W));
+  a = 1.0 ./ (1.0 + exp(-k*X*W));
   
   low_threshold = 0.25;
   high_threshold = 0.75;
