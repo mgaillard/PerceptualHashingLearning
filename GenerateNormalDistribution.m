@@ -25,22 +25,35 @@ function [P, L, X1, X2, S] = GenerateNormalDistribution(std, n, k, d)
   endfor
   
   % Create the list of triplets (point, point, similarity)
-  X1 = [];
-  X2 = [];
-  S = [];
+  r = n*k;
+  % Total number of triplets
+  nb_triplets = r*(r-1)/2;
+  % Counter representing the number of the current triplet. From 1 to nb_triplets.
+  c = 1;
+  X1 = zeros(nb_triplets, d);
+  X2 = zeros(nb_triplets, d);
+  S = zeros(nb_triplets, 1);
+  
   % For each pair of points
-  for i = 1:n*k
-    for j = i+1:n*k
-      X1 = [X1; P(i, :)];
-      X2 = [X2; P(j, :)];
+  for i = 1:r
+    for j = i+1:r
+      X1(c, :) = P(i, :);
+      X2(c, :) = P(j, :);
       
       if L(i) == L(j)
         similarity = 1;
       else
         similarity = 0;
       endif
+      S(c) = similarity;
       
-      S = [S; similarity];
+      % Display the progress
+      if mod(c, nb_triplets/100) == 0
+        fprintf("%d / %d\t%d %%\n", c, nb_triplets, floor(100*c/nb_triplets));
+        fflush(stdout);
+      endif
+      
+      c += 1;
     endfor
   endfor
 end

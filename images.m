@@ -1,35 +1,63 @@
-% Load features of images
-number_images = 8;
-
-load features/features_base.h5
-base = features';
-
-load features/features_blur.h5
-blur = features';
-
-load features/features_compress10.h5
-compress10 = features';
-
-load features/features_crop10.h5
-crop10 = features';
-
-load features/features_gray.h5
-gray = features';
-
-load features/features_resize50.h5
-resize50 = features';
-
-load features/features_rotate5.h5
-rotate5 = features';
-
-features = [base; blur; compress10; crop10; resize50; rotate5];
-
-[P, L, X1, X2, S] = GenerateTripletsFromFeatures(features, number_images);
-
+% Parameter for the training
+number_images = 50;
+centering = "separate";
 rho = 3;
 k = 10;
 bits = 16;
-iterations = 10;
+iterations = 3;
+
+% Load features of images
+load features/features_base.h5
+base = features'(1:number_images, :);
+
+load features/features_blur.h5
+blur = features'(1:number_images, :);
+
+load features/features_compress10.h5
+compress10 = features'(1:number_images, :);
+
+load features/features_crop10.h5
+crop10 = features'(1:number_images, :);
+
+load features/features_gray.h5
+gray = features'(1:number_images, :);
+
+load features/features_resize50.h5
+resize50 = features'(1:number_images, :);
+
+load features/features_rotate5.h5
+rotate5 = features'(1:number_images, :);
+
+% Center data
+if centering == "separate"
+  fprintf("\n------ Separate centering ------\n");
+  base = center(base);
+  blur = center(blur);
+  compress10 = center(compress10);
+  crop10 = center(crop10);
+  gray = center(gray);
+  resize50 = center(resize50);
+  rotate5 = center(rotate5);
+elseif centering == "all"
+  fprintf("\n------ All centering ------\n");
+  m = mean([mean(base); mean(blur); mean(compress10); mean(crop10); mean(gray); mean(resize50); mean(rotate5)]);
+  base = base - m;
+  blur = blur - m;
+  compress10 = compress10 - m;
+  crop10 = crop10 - m;
+  gray = gray - m;
+  resize50 = resize50 - m;
+  rotate5 = rotate5 - m;
+endif
+
+features = [base; blur; compress10; crop10; resize50; rotate5];
+
+
+% Generate dataset
+fprintf("\n------ Triplet generation ------\n");
+fflush(stdout);
+
+[P, L, X1, X2, S] = GenerateTripletsFromFeatures(features, number_images);
 
 % Take the best solution of several optimization
 best_params = [];
