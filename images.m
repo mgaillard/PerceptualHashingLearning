@@ -29,7 +29,7 @@ load features/features_rotate5.h5
 rotate5 = features'(1:number_images, :);
 
 % Center data
-if centering == "separate"
+if strcmp(centering, "separate") == 1
   fprintf("\n------ Separate centering ------\n");
   base = center(base);
   blur = center(blur);
@@ -38,7 +38,7 @@ if centering == "separate"
   gray = center(gray);
   resize50 = center(resize50);
   rotate5 = center(rotate5);
-elseif centering == "all"
+elseif strcmp(centering, "all") == 1
   fprintf("\n------ All centering ------\n");
   m = mean([mean(base); mean(blur); mean(compress10); mean(crop10); mean(gray); mean(resize50); mean(rotate5)]);
   base = base - m;
