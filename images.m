@@ -1,6 +1,7 @@
 % Parameter for the training
 number_images = 50;
-centering = "separate";
+centering = true;
+pca = false;
 rho = 3;
 k = 10;
 bits = 16;
@@ -28,29 +29,28 @@ resize50 = features'(1:number_images, :);
 load features/features_rotate5.h5
 rotate5 = features'(1:number_images, :);
 
-% Center data
-if strcmp(centering, "separate") == 1
-  fprintf("\n------ Separate centering ------\n");
-  base = center(base);
-  blur = center(blur);
-  compress10 = center(compress10);
-  crop10 = center(crop10);
-  gray = center(gray);
-  resize50 = center(resize50);
-  rotate5 = center(rotate5);
-elseif strcmp(centering, "all") == 1
-  fprintf("\n------ All centering ------\n");
-  m = mean([mean(base); mean(blur); mean(compress10); mean(crop10); mean(gray); mean(resize50); mean(rotate5)]);
-  base = base - m;
-  blur = blur - m;
-  compress10 = compress10 - m;
-  crop10 = crop10 - m;
-  gray = gray - m;
-  resize50 = resize50 - m;
-  rotate5 = rotate5 - m;
+features = [base; blur; compress10; crop10; gray; resize50; rotate5];
+
+% PCA
+if pca == true
+  [pca_coeffs, features] = princomp(features,'econ');
+  fprintf("\n------ PCA (size: %d, %d)------\n", size(features));
 endif
 
-features = [base; blur; compress10; crop10; resize50; rotate5];
+% Center data
+if centering == true
+  fprintf("\n------ Centering ------\n");
+  features = center(features);
+endif
+
+% Features are updated
+base       = features(1:number_images, :);
+blur       = features(  number_images+1:2*number_images, :);
+compress10 = features(2*number_images+1:3*number_images, :);
+crop10     = features(3*number_images+1:4*number_images, :);
+gray       = features(4*number_images+1:5*number_images, :);
+resize50   = features(5*number_images+1:6*number_images, :);
+rotate5    = features(6*number_images+1:7*number_images, :);
 
 
 % Generate dataset
@@ -59,6 +59,7 @@ fflush(stdout);
 
 [P, L, X1, X2, S] = GenerateTripletsFromFeatures(features, number_images);
 
+fprintf("\n------ Training ------\n");
 % Take the best solution of several optimization
 best_params = [];
 best_cost = Inf;
@@ -72,7 +73,7 @@ for i=1:iterations
   % Cost function with true binary codes
   % If the continuous cost at the end of the optimization is less than the real cost,
   % some activations might be near to 0.5 which is not a good value
-  real_cost = RealCostFunction(X1, X2, opti_params, S, k, rho)
+  real_cost = RealCostFunction(X1, X2, opti_params, S, k, rho);
   
   if real_cost < best_cost
     best_cost = real_cost;
@@ -84,6 +85,10 @@ fprintf("\n------ Best real cost: %d ------\n", best_cost);
 
 % Histogram of the activations. The activations should be near to 0 or 1
 ActivationHistogram(P, best_params, k, 20);
+
+% Analysis of the binary codes
+fprintf("\n------ Analysis ------\n");
+Analyse(X1, X2, best_params, S, k, rho);
 
 % Save binary codes
 codes = Predict(base, best_params, k);

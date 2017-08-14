@@ -25,6 +25,8 @@ for i=1:iterations
   endif
 endfor
 
+% Analysis of the binary codes
+Analyse(X1, X2, best_params, S, k, rho);
 % Histogram of the activations. The activations should be near to 0 or 1
 ActivationHistogram(P, best_params, k, 20);
 % A Scatter plot of the points and the hyperplanes of the hash functions
