@@ -3,6 +3,8 @@ number_images = 50;
 centering = true;
 pca = false;
 rho = 3;
+lambda = 1;
+regularization = 0;
 k = 10;
 bits = 16;
 iterations = 3;
@@ -58,6 +60,9 @@ fprintf("\n------ Triplet generation ------\n");
 fflush(stdout);
 
 [P, L, X1, X2, S] = GenerateTripletsFromFeatures(features, number_images);
+% Compute the value of lambda so that negatives examples have less effect on the cost.
+lambda = nnz(S) / (rows(S) - nnz(S));
+fprintf("Lambda=%d\n", lambda);
 
 fprintf("\n------ Training ------\n");
 % Take the best solution of several optimization
@@ -68,12 +73,12 @@ for i=1:iterations
   fflush(stdout);
 
   % Optimization
-  opti_params = TrainModel(X1, X2, S, k, rho, bits);
+  opti_params = TrainModel(X1, X2, S, k, rho, lambda, regularization, bits);
 
   % Cost function with true binary codes
   % If the continuous cost at the end of the optimization is less than the real cost,
   % some activations might be near to 0.5 which is not a good value
-  real_cost = RealCostFunction(X1, X2, opti_params, S, k, rho);
+  real_cost = RealCostFunction(X1, X2, opti_params, S, k, rho, lambda, regularization);
   
   if real_cost < best_cost
     best_cost = real_cost;

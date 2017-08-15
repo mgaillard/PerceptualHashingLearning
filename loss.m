@@ -1,5 +1,8 @@
 [P, L, X1, X2, S] = GenerateNormalDistribution(0.5, 4, 16, 2);
 rho = 0;
+% Compute the value of lambda so that negatives examples have less effect on the cost.
+lambda = nnz(S) / (rows(S) - nnz(S))
+regularization = 0.5;
 k = 10;
 bits = 3;
 iterations = 10;
@@ -12,12 +15,12 @@ for i=1:iterations
   fflush(stdout);
 
   % Optimization
-  opti_params = TrainModel(X1, X2, S, k, rho, bits);
+  opti_params = TrainModel(X1, X2, S, k, rho, lambda, regularization, bits);
 
   % Cost function with true binary codes
   % If the continuous cost at the end of the optimization is less than the real cost,
   % some activations might be near to 0.5 which is not a good value
-  real_cost = RealCostFunction(X1, X2, opti_params, S, k, rho)
+  real_cost = RealCostFunction(X1, X2, opti_params, S, k, rho, lambda, regularization)
   
   if real_cost < best_cost
     best_cost = real_cost;
