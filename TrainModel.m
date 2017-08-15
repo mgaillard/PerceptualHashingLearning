@@ -1,10 +1,19 @@
-function [optimal_weights] = TrainModel(X1, X2, S, k, rho, lambda, regularization, b)
+function [optimal_weights] = TrainModel(X1, X2, S, k, rho, lambda, regularization, b, verbose = false)
   CustomCostFunction = @(w) ContinuousCostFunction(X1, X2, w, S, k, rho, lambda, regularization);
   
   options = optimset('MaxIter', 500);
-  optimal_weights = LSH(columns(X1), b);
+  initial_weights = LSH(columns(X1), b);
   
   % Train with the gradient
   options = optimset(options, 'GradObj', 'on');
-  [optimal_weights, cost, info, output] = fminunc(CustomCostFunction, optimal_weights, options);
+  [optimal_weights, cost, info, output] = fminunc(CustomCostFunction, initial_weights, options);
+  
+  if (verbose == true)
+    initial_cost = RealCostFunction(X1, X2, initial_weights, S, k, rho, lambda);
+    optimal_cost = RealCostFunction(X1, X2, optimal_weights, S, k, rho, lambda);
+    
+    display(initial_cost);
+    display(optimal_cost);
+    display(output);
+  endif
 end

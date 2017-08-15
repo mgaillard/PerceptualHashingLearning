@@ -2,6 +2,7 @@
 number_images = 50;
 centering = true;
 pca = false;
+verbose = true;
 rho = 3;
 lambda = 1;
 regularization = 0;
@@ -73,7 +74,7 @@ for i=1:iterations
   fflush(stdout);
 
   % Optimization
-  opti_params = TrainModel(X1, X2, S, k, rho, lambda, regularization, bits);
+  opti_params = TrainModel(X1, X2, S, k, rho, lambda, regularization, bits, verbose);
 
   % Cost function with true binary codes
   % If the continuous cost at the end of the optimization is less than the real cost,
