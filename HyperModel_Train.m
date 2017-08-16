@@ -1,11 +1,16 @@
 function [optimal_weights] = HyperModel_Train(X1, X2, S, k, rho, lambda, regularization, b, verbose = false)
   CustomCostFunction = @(w) HyperModel_ContinuousCostFunction(X1, X2, w, S, k, rho, lambda, regularization);
   
-  options = optimset('MaxIter', 500);
+  % Train with the gradient, maximum 500 iterations
+  options = optimset('MaxIter', 500, 'GradObj', 'on');
   initial_weights = LSH(columns(X1), b);
   
-  % Train with the gradient
-  options = optimset(options, 'GradObj', 'on');
+  % Display the cost at all iterations
+  if (verbose == true)
+    options = optimset(options, 'OutputFcn', @DisplayOptimState);
+    fprintf("Iter\tCost\n");
+  endif
+  
   [optimal_weights, optimal_cont_cost, info, output] = fminunc(CustomCostFunction, initial_weights, options);
   
   if (verbose == true)
