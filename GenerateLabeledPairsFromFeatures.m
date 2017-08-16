@@ -5,7 +5,7 @@
 %                The n following rows are features modified according to transformation B
 %                etc...
 % param n The number of features for each transformation
-function [P, L, X1, X2, S] = GenerateTripletsFromFeatures(features, n)
+function [P, L, X1, X2, S] = GenerateLabeledPairsFromFeatures(features, n)
   r = rows(features);
   % All points
   P = features;

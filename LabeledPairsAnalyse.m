@@ -1,8 +1,4 @@
-function [precision, recall, fmeasure, nb_true_positive, nb_false_positive, nb_false_negative, nb_true_negative] = Analyse(X1, X2, W, S, k, rho)
-  % Binary codes of the samples
-  h1 = Predict(X1, W, k);
-  h2 = Predict(X2, W, k);
-  
+function [precision, recall, fmeasure, nb_true_positive, nb_false_positive, nb_false_negative, nb_true_negative] = LabeledPairsAnalyse(h1, h2, S, rho)
   % Hamming distance between the two binary codes.
   Diff = h1 - h2;
   HammingDist = sum(abs(Diff), 2);

@@ -1,4 +1,4 @@
-function [cost grad] = ContinuousCostFunction(X1, X2, W, S, k, rho, lambda, regularization)
+function [cost grad] = HyperModel_ContinuousCostFunction(X1, X2, W, S, k, rho, lambda, regularization)
   % Binary codes of the samples
   a1 = 1.0 ./ (1.0 + exp(-k*X1*W));
   a2 = 1.0 ./ (1.0 + exp(-k*X2*W));

@@ -2,13 +2,13 @@
 number_images = 50;
 centering = true;
 pca = false;
-verbose = true;
+verbose = false;
 rho = 3;
 lambda = 1;
 regularization = 0.5;
 k = 10;
 bits = 16;
-iterations = 3;
+iterations = 1;
 
 % Load features of images
 load features/features_base.h5
@@ -60,7 +60,7 @@ rotate5    = features(6*number_images+1:7*number_images, :);
 fprintf("\n------ Triplet generation ------\n");
 fflush(stdout);
 
-[P, L, X1, X2, S] = GenerateTripletsFromFeatures(features, number_images);
+[P, L, X1, X2, S] = GenerateLabeledPairsFromFeatures(features, number_images);
 % Compute the value of lambda so that negatives examples have less effect on the cost.
 lambda = nnz(S) / (rows(S) - nnz(S));
 fprintf("Lambda=%d\n", lambda);
@@ -74,12 +74,12 @@ for i=1:iterations
   fflush(stdout);
 
   % Optimization
-  opti_params = TrainModel(X1, X2, S, k, rho, lambda, regularization, bits, verbose);
+  opti_params = HyperModel_Train(X1, X2, S, k, rho, lambda, regularization, bits, verbose);
 
   % Cost function with true binary codes
   % If the continuous cost at the end of the optimization is less than the real cost,
   % some activations might be near to 0.5 which is not a good value
-  real_cost = RealCostFunction(X1, X2, opti_params, S, k, rho, lambda, regularization);
+  real_cost = HyperModel_RealCostFunction(X1, X2, opti_params, S, k, rho, lambda, regularization);
   
   if real_cost < best_cost
     best_cost = real_cost;
@@ -89,31 +89,31 @@ endfor
 
 fprintf("\n------ Best real cost: %d ------\n", best_cost);
 
-% Histogram of the activations. The activations should be near to 0 or 1
-ActivationHistogram(P, best_params, k, 20);
-
 % Analysis of the binary codes
 fprintf("\n------ Analysis ------\n");
-Analyse(X1, X2, best_params, S, k, rho);
+% Histogram of the activations. The activations should be near to 0 or 1
+HyperModel_ActivationHistogram(P, best_params, k, 20);
+HyperModel_NumberMiddleActivations(P, best_params, k);
+HyperModel_LabeledPairsAnalyse(X1, X2, best_params, S, k, rho);
 
 % Save binary codes
-codes = Predict(base, best_params, k);
+codes = HyperModel_Predict(base, best_params, k);
 save("-hdf5", "codes/codes_base.h5", "codes");
 
-codes = Predict(blur, best_params, k);
+codes = HyperModel_Predict(blur, best_params, k);
 save("-hdf5", "codes/codes_blur.h5", "codes");
 
-codes = Predict(compress10, best_params, k);
+codes = HyperModel_Predict(compress10, best_params, k);
 save("-hdf5", "codes/codes_compress10.h5", "codes");
 
-codes = Predict(crop10, best_params, k);
+codes = HyperModel_Predict(crop10, best_params, k);
 save("-hdf5", "codes/codes_crop10.h5", "codes");
 
-codes = Predict(gray, best_params, k);
+codes = HyperModel_Predict(gray, best_params, k);
 save("-hdf5", "codes/codes_gray.h5", "codes");
 
-codes = Predict(resize50, best_params, k);
+codes = HyperModel_Predict(resize50, best_params, k);
 save("-hdf5", "codes/codes_resize50.h5", "codes");
 
-codes = Predict(rotate5, best_params, k);
+codes = HyperModel_Predict(rotate5, best_params, k);
 save("-hdf5", "codes/codes_rotate5.h5", "codes");

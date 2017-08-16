@@ -1,4 +1,4 @@
-function DisplayHashFunctions(P, L, W)
+function HyperModel_DisplayHashFunctions(P, L, W)
   if columns(P) > 2
     warning("Only the first two dimensions of the space are displayed");
   endif

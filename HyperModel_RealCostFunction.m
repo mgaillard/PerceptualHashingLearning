@@ -1,8 +1,8 @@
 % Cost function with thresholded binary codes
-function [cost] = RealCostFunction(X1, X2, W, S, k, rho, lambda)
+function [cost] = HyperModel_RealCostFunction(X1, X2, W, S, k, rho, lambda)
   % Binary codes of the samples
-  h1 = Predict(X1, W, k);
-  h2 = Predict(X2, W, k);
+  h1 = HyperModel_Predict(X1, W, k);
+  h2 = HyperModel_Predict(X2, W, k);
 
   % Hamming distance between the two binary codes
   HammingDist = sum(abs(h1 - h2), 2);

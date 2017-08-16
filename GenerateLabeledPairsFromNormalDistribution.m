@@ -2,7 +2,7 @@
 % param n Number of classes
 % param k Number of points per classe
 % param d Number of dimensions
-function [P, L, X1, X2, S] = GenerateNormalDistribution(std, n, k, d)
+function [P, L, X1, X2, S] = GenerateLabeledPairsFromNormalDistribution(std, n, k, d)
   % All points
   P = [];
   % All labels
