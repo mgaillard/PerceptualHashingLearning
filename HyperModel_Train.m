@@ -6,14 +6,17 @@ function [optimal_weights] = HyperModel_Train(X1, X2, S, k, rho, lambda, regular
   
   % Train with the gradient
   options = optimset(options, 'GradObj', 'on');
-  [optimal_weights, cost, info, output] = fminunc(CustomCostFunction, initial_weights, options);
+  [optimal_weights, optimal_cont_cost, info, output] = fminunc(CustomCostFunction, initial_weights, options);
   
   if (verbose == true)
-    initial_cost = HyperModel_RealCostFunction(X1, X2, initial_weights, S, k, rho, lambda);
-    optimal_cost = HyperModel_RealCostFunction(X1, X2, optimal_weights, S, k, rho, lambda);
+    initial_real_cost = HyperModel_RealCostFunction(X1, X2, initial_weights, S, k, rho, lambda);
+    initial_cont_cost = CustomCostFunction(initial_weights);
+    optimal_real_cost = HyperModel_RealCostFunction(X1, X2, optimal_weights, S, k, rho, lambda);
     
-    display(initial_cost);
-    display(optimal_cost);
+    display(initial_cont_cost);
+    display(initial_real_cost);
+    display(optimal_real_cost);
+    display(optimal_cont_cost);
     display(output);
   endif
 end

@@ -1,5 +1,5 @@
 % Parameter for the training
-number_images = 23;
+number_images = 50;
 centering = true;
 pca = false;
 verbose = false;
@@ -8,7 +8,7 @@ lambda = 1;
 regularization = 0.5;
 k = 10;
 bits = 16;
-iterations = 250;
+iterations = 1;
 
 % Load features of images
 load features/features_base.h5
@@ -104,7 +104,8 @@ title("Histogram of the costs");
 fprintf("\n------ Analysis ------\n");
 % Histogram of the activations. The activations should be near to 0 or 1
 HyperModel_ActivationHistogram(P, best_params, k, 20);
-HyperModel_NumberMiddleActivations(P, best_params, k);
+mid_activ = HyperModel_NumberMiddleActivations(P, best_params, k);
+fprintf("Middle activation: %d\n", mid_activ);
 HyperModel_LabeledPairsAnalyse(X1, X2, best_params, S, k, rho);
 
 % Save binary codes
