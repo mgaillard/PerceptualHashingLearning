@@ -1,8 +1,8 @@
 % Parameter for the training
-number_images = 50;
+number_images = 23;
 centering = true;
 pca = false;
-verbose = false;
+verbose = true;
 rho = 3;
 lambda = 1;
 regularization = 0.5;
@@ -96,9 +96,12 @@ fprintf("Max: %d\n", max(costs));
 fprintf("Median: %d\n", median(costs));
 fprintf("Mean: %d\n", mean(costs));
 fprintf("Standard deviation: %d\n", std(costs));
-figure();
-hist(costs, 20);
-title("Histogram of the costs");
+% If there is more than one iteration, we display the cost histogram
+if (iterations > 1)
+  figure();
+  hist(costs, 20);
+  title("Histogram of the costs");
+endif
 
 % Analysis of the binary codes
 fprintf("\n------ Analysis ------\n");
