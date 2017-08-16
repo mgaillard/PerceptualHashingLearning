@@ -1,5 +1,5 @@
 % Parameter for the training
-number_images = 50;
+number_images = 23;
 centering = true;
 pca = false;
 verbose = false;
@@ -8,7 +8,7 @@ lambda = 1;
 regularization = 0.5;
 k = 10;
 bits = 16;
-iterations = 1;
+iterations = 250;
 
 % Load features of images
 load features/features_base.h5
@@ -66,6 +66,8 @@ lambda = nnz(S) / (rows(S) - nnz(S));
 fprintf("Lambda=%d\n", lambda);
 
 fprintf("\n------ Training ------\n");
+% Costs of all optimizations
+costs = zeros(iterations, 1);
 % Take the best solution of several optimization
 best_params = [];
 best_cost = Inf;
@@ -79,15 +81,24 @@ for i=1:iterations
   % Cost function with true binary codes
   % If the continuous cost at the end of the optimization is less than the real cost,
   % some activations might be near to 0.5 which is not a good value
-  real_cost = HyperModel_RealCostFunction(X1, X2, opti_params, S, k, rho, lambda, regularization);
+  costs(i) = HyperModel_RealCostFunction(X1, X2, opti_params, S, k, rho, lambda, regularization);
   
-  if real_cost < best_cost
-    best_cost = real_cost;
+  if costs(i) < best_cost
+    best_cost = costs(i);
     best_params = opti_params;
   endif
 endfor
 
-fprintf("\n------ Best real cost: %d ------\n", best_cost);
+
+fprintf("\n------ Real cost statistics: ------\n");
+fprintf("Min: %d\n", min(costs));
+fprintf("Max: %d\n", max(costs));
+fprintf("Median: %d\n", median(costs));
+fprintf("Mean: %d\n", mean(costs));
+fprintf("Standard deviation: %d\n", std(costs));
+figure();
+hist(costs, 20);
+title("Histogram of the costs");
 
 % Analysis of the binary codes
 fprintf("\n------ Analysis ------\n");
