@@ -1,7 +1,8 @@
 % Parameter for the training
 number_images = 23;
-centering = true;
 pca = false;
+centering = true;
+normalization = true;
 verbose = true;
 rho = 3;
 lambda = 1;
@@ -44,6 +45,13 @@ endif
 if centering == true
   fprintf("\n------ Centering ------\n");
   features = center(features);
+endif
+
+% Normalization
+if normalization == true
+  fprintf("\n------ Normalization ------\n");
+  norms = sqrt(sumsq(features, 2));
+  features = features./norms;
 endif
 
 % Features are updated
