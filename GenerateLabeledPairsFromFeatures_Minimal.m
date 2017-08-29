@@ -32,30 +32,33 @@ function [P, L, X1, X2, S] = GenerateLabeledPairsFromFeatures_Minimal(features, 
   X2 = zeros(nb_triplets, columns(features));
   S = zeros(nb_triplets, 1);
   
-  % For each pair of points
-  for i = 1:r
-    for j = i+1:r
-      % If the two features are similar, we add them to the dataset.
-      if (L(i) == L(j))
-        X1(c, :) = P(i, :);
-        X2(c, :) = P(j, :);
-        S(c) = 1;
-        c += 1;
+  % Generating similar triplets
+  for image = 1:n
+    for i = 1:k
+      for j = i+1:k
+        index1 = (i-1)*n + image;
+        index2 = (j-1)*n + image;
+        
+        if (L(index1) == L(index2))
+          X1(c, :) = P(index1, :);
+          X2(c, :) = P(index2, :);
+          S(c) = 1;
+          c += 1;
+        endif
+      endfor
+    endfor
+  endfor
+  
+  % Generating dissimilar triplets
+  for i = 1:n
+    for j = i+1:n
       % If the two features are both from the base image set and not similar, we add them to the dataset.  
-      elseif (i <= n && j <= n && L(i) != L(j))
+      if (L(i) != L(j))
         X1(c, :) = P(i, :);
         X2(c, :) = P(j, :);
         S(c) = 0;
         c += 1;
       endif
-      
-      % Display the progress
-      if mod(p, nb_total_triplets/100) == 0
-        fprintf("%d / %d\t%d %%\n", p, nb_total_triplets, floor(100*p/nb_total_triplets));
-        fflush(stdout);
-      endif
-      
-      p += 1;
     endfor
   endfor
 end
