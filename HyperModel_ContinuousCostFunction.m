@@ -1,3 +1,7 @@
+% Compute the cost and the gradient of a set of parameters W.
+% X1, X2 are vectors of input vectors and S is a similarity vector
+% S(i) == 1 means that X1(i) and X2(i) are similar
+% k, rho, lambda, regularization are hyper parameters of the cost function
 function [cost grad] = HyperModel_ContinuousCostFunction(X1, X2, W, S, k, rho, lambda, regularization)
   % Binary codes of the samples
   a1 = 1.0 ./ (1.0 + exp(-k*X1*W));
@@ -13,13 +17,16 @@ function [cost grad] = HyperModel_ContinuousCostFunction(X1, X2, W, S, k, rho, l
   
   % Regularization of activations
   if (regularization > 0)
-    cost += sum(sum((regularization/2)*(1 - cos(2*pi*a1))));
-    cost += sum(sum((regularization/2)*(1 - cos(2*pi*a2))));
+    % Cosine regularization
+    % cost += sum(sum((regularization/2)*(1 - cos(2*pi*a1))));
+    % cost += sum(sum((regularization/2)*(1 - cos(2*pi*a2))));
+		
+    % Polynomial regularization
+    cost += sum(sum(4*regularization*a1.*(1 - a1)));
+    cost += sum(sum(4*regularization*a2.*(1 - a2)));
   endif
   
   % ---------- Gradient ----------
-  
-  SimilaritySign = 2*S - 1;
   DiffSign = sign(Diff);
   HingeSimilar = [HammingDist > rho];
   HingeDissimilar = [HammingDist < (rho+1)];
@@ -31,7 +38,12 @@ function [cost grad] = HyperModel_ContinuousCostFunction(X1, X2, W, S, k, rho, l
        
   % Gradient of the regularization term
   if (regularization > 0)
-  grad += regularization*pi*X1'*(sin(2*pi*a1) .* k .* a1 .* (1 - a1)) ...
-        + regularization*pi*X2'*(sin(2*pi*a2) .* k .* a2 .* (1 - a2));
+    % Cosine regularization
+    % grad += X1'*(regularization*pi*sin(2*pi*a1) .* k .* a1 .* (1 - a1)) ...
+    %       + X2'*(regularization*pi*sin(2*pi*a2) .* k .* a2 .* (1 - a2));
+    
+    % Polynomial regularization
+    grad += X1'*(4*regularization*(1 - 2*a1) .* k .* a1 .* (1 - a1)) ...
+          + X2'*(4*regularization*(1 - 2*a2) .* k .* a2 .* (1 - a2));
   endif
 end
