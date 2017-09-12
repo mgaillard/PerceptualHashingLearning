@@ -39,7 +39,7 @@ function [precision, recall, fmeasure, nb_true_positive, nb_false_positive, nb_f
   fprintf("Number of true positives: %d\n", nb_true_positive);
   fprintf("Number of false positives: %d\n", nb_false_positive);
   fprintf("Number of false negatives: %d\n", nb_false_negative);
-  fprintf("Number of false negatives: %d\n", nb_true_negative);
+  fprintf("Number of true negatives: %d\n", nb_true_negative);
   
   fprintf("Ratio of preserved similar triplets: %d\n", nb_true_positive / nb_condition_positive);
   fprintf("Ratio of preserved dissimilar triplets: %d\n", nb_true_negative / nb_condition_negative);

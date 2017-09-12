@@ -7,12 +7,12 @@ function HyperModel_DisplayHashFunctions(P, L, W)
   b = columns(W);
   
   % Length of the lines
-  line_length = 10;
+  line_length = 15;
 
   % Plot the two first dimensions
   figure();
   hold on;
-  scatter(P(:, 1), P(:, 2), [], L);
+  scatter(P(:, 1), P(:, 2), 64, L, "filled");
   title("Points and hash functions");
   for i = 1:b
     vec = [W(2, i) -W(1, i)];

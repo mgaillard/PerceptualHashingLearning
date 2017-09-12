@@ -11,6 +11,9 @@ k = 10;
 bits = 16;
 method = "hyper";
 iterations = 1;
+% For reproducibility, fix the seed.
+rand("state", 17);
+randn("state", 17);
 
 % Load features of images
 load features/features_base.h5
