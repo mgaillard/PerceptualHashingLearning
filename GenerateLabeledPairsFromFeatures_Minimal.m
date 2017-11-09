@@ -13,11 +13,7 @@ function [P, L, X1, X2, S] = GenerateLabeledPairsFromFeatures_Minimal(features, 
   % All points
   P = features;
   % All labels
-  L = zeros(r, 1);
-  
-  for i = 1:r
-    L(i) = mod(i - 1, n);
-  end
+  L = GenerateLabels(features, n);
   
   % Create the list of triplets (point, point, similarity)
   % Total number of triplets

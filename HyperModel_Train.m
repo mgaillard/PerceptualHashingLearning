@@ -18,8 +18,8 @@ function [optimal_weights] = HyperModel_Train(X1, X2, S, k, rho, lambda, regular
     initial_cont_cost = CustomCostFunction(initial_weights);
     optimal_real_cost = HyperModel_RealCostFunction(X1, X2, optimal_weights, S, k, rho, lambda);
     
-    display(initial_cont_cost);
     display(initial_real_cost);
+    display(initial_cont_cost);
     display(optimal_real_cost);
     display(optimal_cont_cost);
     display(output);
