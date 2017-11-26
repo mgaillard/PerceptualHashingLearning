@@ -43,4 +43,4 @@ fprintf("Middle activation: %d\n", mid_activ);
 HyperModel_LabeledPairsAnalyse(X1, X2, best_params, S, k, rho);
 
 % Save binary codes
-SaveBinaryCodes(best_params, k, base, blur, compress10, crop10, gray, resize50, rotate5)
+SaveBinaryCodes(best_params, k, base, blur, compress10, crop10, gray, resize50, rotate5);

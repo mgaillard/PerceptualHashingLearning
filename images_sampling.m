@@ -13,7 +13,6 @@ lambda = 1;
 regularization = 0.0;
 k = 0.1;
 bits = 16;
-method = "hyper";
 iterations = 1;
 % For reproducibility, fix the seed.
 rand("state", 17);
@@ -74,7 +73,10 @@ end
 % Analysis of the binary codes
 fprintf("\n------ Analysis ------\n");
 % Histogram of the activations. The activations should be near to 0 or 1
-HyperModel_ActivationHistogram(P, best_params, k, 20);
-mid_activ = HyperModel_NumberMiddleActivations(P, weights, k);
+HyperModel_ActivationHistogram(features, weights, k, 20);
+mid_activ = HyperModel_NumberMiddleActivations(features, weights, k);
 fprintf("Middle activation: %d\n", mid_activ);
-HyperModel_LabeledPairsAnalyse(X1, X2, weights, S, k, rho);
+HyperModel_LabeledPairsAnalyse_Generated(features, labels, weights, k, rho);
+
+% Save binary codes
+SaveBinaryCodes(weights, k, base, blur, compress10, crop10, gray, resize50, rotate5);
